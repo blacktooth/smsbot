@@ -1,0 +1,3 @@
+export SMS_MESSAGES=1
+export SMS_1_NUMBER=9703055957
+export SMS_1_TEXT="TT"
