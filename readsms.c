@@ -4,6 +4,7 @@
 #include<stdio.h>
 #include<stdlib.h>
 #include<string.h>
+#include<unistd.h>
 #include "readsms.h"
 #include "messages.h"
 
@@ -58,8 +59,8 @@ int main(int argc, char **argv)
 		{
 			char * command = (char *) malloc(sizeof(char) * COMMAND_MAX);
 			strcpy(APPNAME, check_KWD(KWD));
-			sprintf(command, "%s%s %s \"%s\"",APPS_PATH, APPNAME, SENDER, SMS_CONTENT);
-			printf("%s\n", command);
+			sprintf(command, "%s%s",APPS_PATH, APPNAME);
+			execl(command, command, SENDER, SMS_CONTENT, (char *) 0); 
 		}	
 		else
 			reply_SMS(SENDER, ERR_INVALID_KWD);
