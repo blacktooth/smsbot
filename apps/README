@@ -1,6 +1,35 @@
-SENDTHISTO and SENDTHISTEXT must be set after succesful execution of the script.
-SENDTHISTO may contain csv of mobile numbers.
-SENDTHISTEXT is the text to be sent.
-Update the applist.db file for the main main daemon to recognize the app created.
-Select a keyword for the app (no spaces and special characters).
+WRITING A VALID SCRIPT
+
+--------------------------------------------------------------------------------
+INPUT
+--------------------------------------------------------------------------------
+
+The input to the script are the environment variables SENTFROM and SENTTEXT
+
+--------------------------------------------------------------------------------
+OUTPUT
+--------------------------------------------------------------------------------
+
+The output must be properly encoded into JSON fromat for data-interchange.
+(Check http://www.json.org)
+
+	{	
+		"sendto": "+919xxxxxxxx",	
+		"sendwhat": "Text to be sent here...." 
+	}
+
+sendto can be csv of recipients in case the SMS has to be delivered to many.
+
+(Please make sure that the JSON text generated is valid! You may verify it at http://www.jsonlint.com)
+
+--------------------------------------------------------------------------------
+UPDATE
+--------------------------------------------------------------------------------
+
+Compile to make sure that it works properly. 
+
+Update the applist.db file for the readsms daemon to recognize the app created.
+
+Select a keyword for the app (no spaces and special characters and do NOT add any newlines!).
+
 KWD->SCRIPT_NAME|KWD->SCRIPT_NAME

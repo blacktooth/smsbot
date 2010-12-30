@@ -7,7 +7,9 @@
 #include<unistd.h>
 #include "readsms.h"
 #include "messages.h"
-
+#include "cJSON.h"
+char * SENDTO;
+char * SENDWHAT;
 unsigned int reply_SMS(char * numbers_string, const char * message)
 {
 	char * number = (char *) malloc(sizeof(char) * MAX_MOBILE_SIZE);
@@ -31,16 +33,46 @@ const char * check_KWD(char * KWD)
 	char * p_tuple;
 	char * temp = (char *) malloc(sizeof(char) * MAX_BUFFER_SIZE);
 	fgets(content, MAX_BUFFER_SIZE, appfile);
+	fclose(appfile);
 	strcpy(temp, content);
 	for(p_tuple = strtok(content, "|");p_tuple != NULL; p_tuple = strtok(NULL, "|"))
 	{
 		char * p_kwd = strtok(p_tuple, "->");
 		char * p_app = strtok(NULL,">");
 		if(!strcmp(p_kwd, KWD))
-			return (const char *) p_app;
+		{
+			char * command = (char *) malloc(sizeof(char) * COMMAND_MAX);
+			sprintf(command, "%s%s",APPS_PATH, p_app);
+			return (const char *) command;
+		}
 		strcpy(content, temp);	
 	}
 	return NULL;
+}
+
+void setenvironment(char * SENDER, char * SMS_CONTENT)
+{
+	setenv("SENTFROM", SENDER, 1);
+	setenv("TEXTSENT", SMS_CONTENT, 1);
+}
+
+const char * pipe_output(const char * command)
+{
+	FILE * CHLD_PIPE;
+	char * CHLD_STDOUT = (char *) malloc(sizeof(char) * MAX_SMS);
+	CHLD_PIPE = (FILE *) popen(command, "r");
+	fread(CHLD_STDOUT, sizeof(char), MAX_SMS, CHLD_PIPE);
+	pclose(CHLD_PIPE);
+	return (const char *) CHLD_STDOUT;
+}
+
+void parse_JSON(const char * JSON_string)
+{
+	SENDTO = (char *) malloc(sizeof(char) * MAX_MOBILE_SIZE);
+	SENDWHAT = (char *) malloc(sizeof(char) * MAX_BUFFER_SIZE);
+	cJSON * root = cJSON_Parse(JSON_string);
+	SENDTO = cJSON_GetObjectItem(root, "sendto")->valuestring;
+	SENDWHAT = cJSON_GetObjectItem(root, "sendwhat")->valuestring;
 }
 
 int main(int argc, char **argv)
@@ -50,17 +82,15 @@ int main(int argc, char **argv)
 	char * SMS_TEXT = getenv("SMS_1_TEXT");
 	char * KWD = strtok(SMS_TEXT, " ");
 	char * SMS_CONTENT = strtok(NULL,"");
-	char * APPNAME = (char *) malloc(sizeof(char) * MAX_APPNAME_SIZE);
 	if(NUMBER_PARTS_SMS > 1)
 		reply_SMS(SENDER, ERR_LONG_SMS);
 	else
 	{	
 		if(check_KWD(KWD) != NULL)	
 		{
-			char * command = (char *) malloc(sizeof(char) * COMMAND_MAX);
-			strcpy(APPNAME, check_KWD(KWD));
-			sprintf(command, "%s%s",APPS_PATH, APPNAME);
-			execl(command, command, SENDER, SMS_CONTENT, (char *) 0); 
+			setenvironment(SENDER, SMS_CONTENT);
+			parse_JSON(pipe_output(check_KWD(KWD)));
+			reply_SMS(SENDTO, SENDWHAT);
 		}	
 		else
 			reply_SMS(SENDER, ERR_INVALID_KWD);
