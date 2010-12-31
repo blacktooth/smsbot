@@ -20,6 +20,8 @@ The output must be properly encoded into JSON fromat for data-interchange.
 
 sendto can be csv of recipients in case the SMS has to be delivered to many.
 
+Print it to stdout.
+
 (Please make sure that the JSON text generated is valid! You may verify it at http://www.jsonlint.com)
 
 --------------------------------------------------------------------------------

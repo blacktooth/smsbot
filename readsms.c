@@ -35,11 +35,11 @@ const char * check_KWD(char * KWD)
 	fgets(content, MAX_BUFFER_SIZE, appfile);
 	fclose(appfile);
 	strcpy(temp, content);
-	for(p_tuple = strtok(content, "|");p_tuple != NULL; p_tuple = strtok(NULL, "|"))
+	for(p_tuple = strtok(content, "|"); p_tuple != NULL; p_tuple = strtok(NULL, "|"))
 	{
 		char * p_kwd = strtok(p_tuple, "->");
 		char * p_app = strtok(NULL,">");
-		if(!strcmp(p_kwd, KWD))
+		if(!strcasecmp(p_kwd, KWD))
 		{
 			char * command = (char *) malloc(sizeof(char) * COMMAND_MAX);
 			sprintf(command, "%s%s",APPS_PATH, p_app);
@@ -53,7 +53,7 @@ const char * check_KWD(char * KWD)
 void setenvironment(char * SENDER, char * SMS_CONTENT)
 {
 	setenv("SENTFROM", SENDER, 1);
-	setenv("TEXTSENT", SMS_CONTENT, 1);
+	setenv("SENTTEXT", SMS_CONTENT, 1);
 }
 
 const char * pipe_output(const char * command)
