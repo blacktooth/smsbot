@@ -6,6 +6,7 @@ INPUT
 
 The input to the script are the environment variables SENTFROM and SENTTEXT
 
+Use /res/ to keep all the files that the script may need.
 --------------------------------------------------------------------------------
 OUTPUT
 --------------------------------------------------------------------------------
@@ -35,3 +36,5 @@ Update the applist.db file for the readsms daemon to recognize the app created.
 Select a keyword for the app (no spaces and special characters and do NOT add any newlines!).
 
 KWD->SCRIPT_NAME|KWD->SCRIPT_NAME
+
+Write a small description about the script in /res/app_desc.txt

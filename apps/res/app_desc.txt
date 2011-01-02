@@ -1,0 +1,6 @@
+Hi!
+The following are recognized.
+TT [DAY] - Get timetable for the day or today.
+ADDME <list> <nick> <name> - Subscribes you to one of the list.(ADDME b5 sandeep jman)
+MA [list] <message> - Texts to everyone in the list.
+HELP or SUP? - Lists all keywords.
